@@ -9,6 +9,7 @@ class Package:
         self.delivery_status = "At the hub"
         self.zip_code = zip_code
         self.delivery_deadline = delivery_deadline
+        self.delivery_time = None
         self.weight = weight
 
 

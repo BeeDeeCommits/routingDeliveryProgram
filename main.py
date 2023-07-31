@@ -1,5 +1,7 @@
+from datetime import datetime
 from package_manager import PackageManager
 from truck import Truck
+from hashtable import HashTable
 from package import Package
 
 
@@ -9,25 +11,17 @@ def main():
     print(f"Name: {name}\nStudent ID: {student_id}")
     path = 'CSV_files/package_file_CSV.csv'
     package_handler = PackageManager()
-    truck = Truck()
+    truck = Truck(1, "8:00 AM")
+    truck_list = [truck]
     packages = package_handler.read_packages(path)
-    for _ in range(16):
-        print(packages[_].delivery_deadline)
-        truck.add_package(packages[_])
-    for package in truck.packages:
-        print(package.delivery_status)
+    truck.load_truck(packages, [])
+    print(truck.time)
+    print(f"{Truck.total_mileage(truck_list):2f}")
     truck.deliver_packages()
-    for package in truck.packages:
-        print(package.delivery_status)
+    print(truck.time)
+    print(f"{Truck.total_mileage(truck_list):2f}")
 
-    # print("works at this point 2")
-    # print(route)
-    # for path in route:
-    #     count += 1
-    # print(count)
-    """print(matrix)"""
-    """for package in packages:
-        print(f"{package.package_id}, {package.delivery_status}")"""
+    truck.check_delivery_status("12:00 PM")
 
 
 if __name__ == "__main__":
