@@ -17,7 +17,7 @@ class PackageManager:
     def read_packages(self, path):
         with open(path, encoding='utf-8-sig') as package_file:
             for line in package_file:
-                pid, address, state, city, zip_code, deadline, weight = line.split(',')
+                pid, address, city, state, zip_code, deadline, weight = line.split(',')
                 time = self.format_package_time(deadline)
                 deadline = datetime.strptime(time, '%I:%M %p').time()
                 package = Package(int(pid), address, state, city, zip_code, deadline, weight)
