@@ -4,17 +4,18 @@ from datetime import datetime, timedelta
 
 
 class Truck:
-    # Method to initialize a Truck object
+    # Method/Constructor to initialize a Truck object
     def __init__(self, truck_id, time):
         self.truck_id = truck_id  # unique identifier for a truck
         self.capacity = 16  # Truck's package capacity
         self.packages = HashTable()  # A hashtable to store packages
         self.location = "4001 South 700 East"  # Tracks the location of a truck. Every truck starts at the Hub
         self.speed = 18 / 60  # Speed of a truck in miles per minute
-        self.distance_traveled = 0.0 # Accumulated distance traveled by a truck
+        self.distance_traveled = 0.0  # Accumulated distance traveled by a truck
         self.time = datetime.strptime(time, '%I:%M %p')
         self.truck_list = None  # A list of package IDs assigned to a truck
         self.route = []  # List to track the route taken by the truck
+        self.query_list = []
 
     # Method to add a package to a truck using a custom hashtable
     def add_package(self, package):
@@ -82,72 +83,88 @@ class Truck:
 
     # Method to show packages on the truck that are going to a specific address
     def show_packages_by_address(self, address):
-        package_list = []
         for package_id in self.truck_list:
             package = self.packages.get(package_id)
             if package.delivery_address == address:
-                package_list.append(package)
-        if package_list:
+                self.query_list.append(package)
+        if self.query_list:
             print(f"Packages to {address} include:")
             print("----------------------------------------------")
-            for package_ in package_list:
+            for package_ in self.query_list:
                 print(f"ID:{package_.package_id}{'':<5}Deadline: {package_.delivery_deadline}{'':<5}Delivery Time: {package_.delivery_time}{'':<5}Address: {package_.delivery_address}{'':<5}City: {package_.delivery_city}{'':<5}State: {package_.state}{'':<5}Zip Code: {package_.zip_code}\n")
+        self.query_list = []
 
     # Method to show packages on a truck that are going to a specific city
     def show_packages_by_city(self, city):
-        city_list = []
         for package_id in self.truck_list:
             package = self.packages.get(package_id)
             if package.delivery_city == city:
-                city_list.append(package)
-        if city_list:
+                self.query_list.append(package)
+        if self.query_list:
             print(f"Packages going to {city} on Truck_{self.truck_id} include:")
             print("---------------------------------------------------")
-        for package_ in city_list:
+        for package_ in self.query_list:
             print(f"ID:{package_.package_id}{'':<5}Deadline: {package_.delivery_deadline}{'':<5}Delivery Time: {package_.delivery_time}{'':<5}Address: {package_.delivery_address}{'':<5}City: {package_.delivery_city}{'':<5}State: {package_.state}{'':<5}Zip Code: {package_.zip_code}\n")
+        self.query_list = []
+
+    # Method to show packages on a truck sharing the same zip code
+    def show_packages_by_zip_code(self, zip_code):
+        for package_id in self.truck_list:
+            package = self.packages.get(package_id)
+            if package.zip_code == zip_code:
+                self.query_list.append(package)
+        if self.query_list:
+            print(f"Packages having Zip Code: {zip_code} on Truck_{self.truck_id} include:")
+            print("---------------------------------------------------------")
+        for package_ in self.query_list:
+            print(f"ID:{package_.package_id}{'':<5}Deadline: {package_.delivery_deadline}{'':<5}Delivery Time: {package_.delivery_time}{'':<5}Address: {package_.delivery_address}{'':<5}City: {package_.delivery_city}{'':<5}State: {package_.state}{'':<5}Zip Code: {package_.zip_code}\n")
+        self.query_list = []
 
     # Method to show packages on the truck with a specific weight
     def show_packages_by_weight(self, weight):
-        weight_list = []
         for package_id in self.truck_list:
             package = self.packages.get(package_id)
             if int(package.weight) == int(weight):
-                weight_list.append(package)
-        if weight_list:
+                self.query_list.append(package)
+        if self.query_list:
             print(f"Packages weighing {weight}kg(s) on Truck_{self.truck_id} include:")
             print("---------------------------------------------------------")
-        for package_ in weight_list:
+        for package_ in self.query_list:
             print(f"ID:{package_.package_id}{'':<5}Deadline: {package_.delivery_deadline}{'':<5}Delivery Time: {package_.delivery_time}{'':<5}Address: {package_.delivery_address}{'':<5}City: {package_.delivery_city}{'':<5}State: {package_.state}{'':<5}Zip Code: {package_.zip_code}\n")
+        self.query_list = []
 
     # Method to show packages on a truck with a specific delivery deadline
     def show_packages_by_deadline(self, deadline):
         deadline = datetime.strptime(deadline, '%I:%M %p').time()
-        deadline_list = []
         for package_id in self.truck_list:
             package = self.packages.get(package_id)
             if package.delivery_deadline == deadline:
-                deadline_list.append(package)
-        if deadline_list:
+                self.query_list.append(package)
+        if self.query_list:
             print(f"Packages with deadline of {deadline} on Truck_{self.truck_id} include:")
             print("-----------------------------------------------------------")
-            for package_ in deadline_list:
+            for package_ in self.query_list:
                 print(f"ID:{package_.package_id}{'':<5}Deadline: {package_.delivery_deadline}{'':<5}Delivery Time: {package_.delivery_time}{'':<5}Address: {package_.delivery_address}{'':<5}City: {package_.delivery_city}{'':<5}State: {package_.state}{'':<5}Zip Code: {package_.zip_code}\n")
+        self.query_list = []
 
     # Method to check the delivery status of a package at a given time
     def check_delivery_status(self, package_id, time):
         time = datetime.strptime(time, '%I:%M %p').time()
         package = self.packages.get(package_id)
+        # If the time to check is less than the departure time, the package is still at the hub
         if time < datetime.strptime("8:00 AM", '%I:%M %p').time() and self.truck_id == 1:
-            print(f"ID:{package.package_id}{'':<5}Deadline: {package.delivery_deadline}{'':<5}Status: At Hub{'':<5}Address: {package.delivery_address}{'':<5}City: {package.delivery_city}{'':<5}State: {package.state}{'':<5}Zip Code: {package.zip_code}\n")
+            print(f"ID:{package.package_id}{'':<5}Deadline: {package.delivery_deadline}{'':<5}Status: At Hub{'':<5}Address: {package.delivery_address}{'':<5}City: {package.delivery_city}{'':<5}State: {package.state}{'':<5}Zip Code: {package.zip_code}")
         elif time < datetime.strptime("9:05 AM", '%I:%M %p').time() and self.truck_id == 2:
-            print(f"ID:{package.package_id}{'':<5}Deadline: {package.delivery_deadline}{'':<5}Status: At Hub{'':<5}Address: {package.delivery_address}{'':<5}City: {package.delivery_city}{'':<5}State: {package.state}{'':<5}Zip Code: {package.zip_code}\n")
+            print(f"ID:{package.package_id}{'':<5}Deadline: {package.delivery_deadline}{'':<5}Status: At Hub{'':<5}Address: {package.delivery_address}{'':<5}City: {package.delivery_city}{'':<5}State: {package.state}{'':<5}Zip Code: {package.zip_code}")
         elif time < datetime.strptime("10:25 AM", '%I:%M %p').time() and self.truck_id == 3:
-            print(f"ID:{package.package_id}{'':<5}Deadline: {package.delivery_deadline}{'':<5}Status: At Hub{'':<5}Address: {package.delivery_address}{'':<5}City: {package.delivery_city}{'':<5}State: {package.state}{'':<5}Zip Code: {package.zip_code}\n")
+            print(f"ID:{package.package_id}{'':<5}Deadline: {package.delivery_deadline}{'':<5}Status: At Hub{'':<5}Address: {package.delivery_address}{'':<5}City: {package.delivery_city}{'':<5}State: {package.state}{'':<5}Zip Code: {package.zip_code}")
         else:
+            # If the delivery time is less than the time to check, the package has been delivered
             if package.delivery_time < time:
-                print(f"ID:{package.package_id}{'':<5}Deadline: {package.delivery_deadline}{'':<5}Status: Delivered{'':<5}Delivery Time: {package.delivery_time}{'':<5}Address: {package.delivery_address}{'':<5}City: {package.delivery_city}{'':<5}State: {package.state}{'':<5}Zip Code: {package.zip_code}\n")
+                print(f"ID:{package.package_id}{'':<5}Deadline: {package.delivery_deadline}{'':<5}Status: Delivered{'':<5}Delivery Time: {package.delivery_time}{'':<5}Address: {package.delivery_address}{'':<5}City: {package.delivery_city}{'':<5}State: {package.state}{'':<5}Zip Code: {package.zip_code}")
+            # If the delivery time is greater than the time to check, the package is on route to be delivered
             else:
-                print(f"ID:{package.package_id}{'':<5}Deadline: {package.delivery_deadline}{'':<5}Status: On Route{'':<5}Address: {package.delivery_address}{'':<5}City: {package.delivery_city}{'':<5}State: {package.state}{'':<5}Zip Code: {package.zip_code}\n")
+                print(f"ID:{package.package_id}{'':<5}Deadline: {package.delivery_deadline}{'':<5}Status: On Route{'':<5}Address: {package.delivery_address}{'':<5}City: {package.delivery_city}{'':<5}State: {package.state}{'':<5}Zip Code: {package.zip_code}")
 
     # Method to change the delivery address of a package (Package 9 specifically)
     def change_address(self, package_id):
@@ -178,10 +195,10 @@ class Truck:
 
     # Method to update the delivery time of packages that arrive at their delivery location
     def update_delivery_time(self, location):
-        for bucket in self.packages.table:
-            for package_id, package in bucket:
-                if package.delivery_address == location:
-                    package.delivery_time = self.get_time().time()
+        for package_id in self.truck_list:
+            package = self.packages.get(package_id)
+            if package.delivery_address == location:
+                package.delivery_time = self.get_time().time()
 
     # Method to deliver packages
     # Implemented using nearest neighbor algorithm
@@ -194,15 +211,15 @@ class Truck:
             shortest_distance = float('inf')
             nearest_location = None
             # Loop through all the packages on the truck to find the nearest location
-            for index in self.packages.table:
-                for package_id, package in index:
-                    if package.delivery_address in visited:
-                        package.delivery_status = "Delivered"
-                        continue
-                    distance = self.find_distance(current_location, package.delivery_address)
-                    if distance < shortest_distance:
-                        shortest_distance = distance
-                        nearest_location = package.delivery_address
+            for package_id in self.truck_list:
+                package = self.packages.get(package_id)
+                if package.delivery_address in visited:
+                    package.delivery_status = "Delivered"
+                    continue
+                distance = self.find_distance(current_location, package.delivery_address)
+                if distance < shortest_distance:
+                    shortest_distance = distance
+                    nearest_location = package.delivery_address
             # If there are no more unvisited package locations, the delivery is complete
             if nearest_location is None:
                 break
