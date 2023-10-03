@@ -59,11 +59,11 @@ class Truck:
     # Method to load packages onto a truck based on the truck's ID
     def load_truck(self, package_list):
         if self.truck_id == 1:
-            self.truck_list = [40, 35, 23, 25, 22, 6, 7, 10, 11, 12, 13, 5, 27, 33, 3, 2]
+            self.truck_list = [13, 14, 15, 16, 17, 19, 20, 37, 40, 34, 30, 31, 2, 35, 11, 21]
         elif self.truck_id == 2:
-            self.truck_list = [34, 21, 14, 15, 16, 17, 18, 19, 20, 1, 36, 37, 29, 31, 30, 8]
+            self.truck_list = [3, 6, 18, 25, 36, 38, 1, 5, 10, 12, 8, 23, 24, 29, 33, 32]
         elif self.truck_id == 3:
-            self.truck_list = [9, 24, 26, 28, 38, 32, 4, 39]
+            self.truck_list = [4, 9, 26, 28, 39, 7, 22, 27]
         for package in package_list:
             if package.package_id in self.truck_list:
                 self.add_package(package)

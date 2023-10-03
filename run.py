@@ -12,11 +12,11 @@ class Run:
         # Create truck objects
         truck_1 = Truck(1, "8:00 AM")
         truck_2 = Truck(2, "9:05 AM")
-        truck_3 = Truck(3, "10:25 AM")
+        truck_3 = Truck(3, "10:21 AM")
         # Boolean to determine if program can run
         can_run = True
         starting_time = datetime.strptime("7:30 AM", '%I:%M %p')
-        print(f"WGUPS DELIVERY LOG")
+        print(f"DELIVERY LOG")
         print("------------------------------------------------------------------")
         print(f"{starting_time.time()} AM: Packages are being loaded onto trucks...\n")
         path = 'CSV_files/package_file_CSV.csv'
@@ -33,8 +33,8 @@ class Run:
             Run.setup_without_log(truck_1, truck_2, truck_3, packages)
 
         while can_run:
-            wgu_trucks = [truck_1, truck_2, truck_3]
-            print("Welcome to WGU Routing Program.\nPlease select from the menu option below:")
+            elite_trucks = [truck_1, truck_2, truck_3]
+            print("Welcome to Elite Routing Program.\nPlease select from the menu option below:")
             print("------------------------------------------------------------------")
             print("1. Check Status of Package by ID and time")
             print("2. Check Status of all Packages by time")
@@ -56,7 +56,7 @@ class Run:
                 package_id = input("Input the package ID:  ")
                 time_to_check = input("Input the time: ")
                 print()
-                for truck in wgu_trucks:
+                for truck in elite_trucks:
                     if int(package_id) in truck.truck_list:
                         truck.check_delivery_status(int(package_id), time_to_check)
             # Looks up all packagea and their delivery status's at the specified time
@@ -66,7 +66,7 @@ class Run:
                 print("------------------------------------------------------------------")
                 time_to_check = input("Input the time: ")
                 print()
-                for truck in wgu_trucks:
+                for truck in elite_trucks:
                     print(f"Package status in Truck_{truck.truck_id} as of {time_to_check} : ")
                     for package_id in truck.truck_list:
                         truck.check_delivery_status(package_id, time_to_check)
@@ -76,7 +76,7 @@ class Run:
                 print("------------------------------------------------------------------")
                 address = input("Enter address here:  ")
                 print()
-                for truck in wgu_trucks:
+                for truck in elite_trucks:
                     truck.show_packages_by_address(address)
             # Looks up all packages to be delivered to the specified city
             if user_option == '4':
@@ -84,36 +84,36 @@ class Run:
                 print("------------------------------------------------------------------")
                 city = input("Enter city here: ")
                 print()
-                for truck in wgu_trucks:
+                for truck in elite_trucks:
                     truck.show_packages_by_city(city)
             # Looks up packages by weight
             if user_option == '5':
                 print("*** Type weight as in: 4")
                 print("------------------------------------------------------------------")
                 weight = input("Enter weight here: ")
-                for truck in wgu_trucks:
+                for truck in elite_trucks:
                     truck.show_packages_by_weight(weight)
             # Looks up all packages sharing a deadline
             if user_option == '6':
                 print("*** Please use a 12 hour format ending in AM/PM as in 9:00 AM ***")
                 print("------------------------------------------------------------------")
                 deadline = input("Enter deadline here: ")
-                for truck in wgu_trucks:
+                for truck in elite_trucks:
                     truck.show_packages_by_deadline(deadline)
             # Looks up all packages sharing a zip code
             if user_option == '7':
                 print("*** Type zip code as in: 84115")
                 print("------------------------------------------------------------------")
                 zip_code = input("Enter zip here: ")
-                for truck in wgu_trucks:
+                for truck in elite_trucks:
                     truck.show_packages_by_zip_code(zip_code)
             # Looks up the total mileage for each truck as well as their combined mileage
             if user_option == '8':
-                Truck.total_mileage(wgu_trucks)
+                Truck.total_mileage(elite_trucks)
             # Looks up the route travelled by each truck
             if user_option == '9':
                 truck_number = input("Enter truck number here (1, 2 or 3) : ")
-                for truck in wgu_trucks:
+                for truck in elite_trucks:
                     if truck.truck_id == int(truck_number):
                         truck.show_route()
             # Ends the program
@@ -147,11 +147,12 @@ class Run:
         # Prior to 10:20 AM the address for package #9 is incorrect
         print(f"{truck_1.get_time().time()} AM: The current address for package #9 is {package_9.delivery_address}, {package_9.delivery_city}, {package_9.state}\n")
         time.sleep(0.3)
-        print(f"{truck_1.get_time().time()} AM: Updating address for package #9...\n")
+        update_time = datetime.strptime("10:20 AM", '%I:%M %p')
+        print(f"{update_time.time()} AM: Updating address for package #9...\n")
         # The change address method updates the address of package #9
         truck_3.change_address(9)
         time.sleep(0.3)
-        print(f"{truck_1.get_time().time()} AM: The address for package #9 is now {package_9.delivery_address}, {package_9.delivery_city}, {package_9.state}\n")
+        print(f"{update_time.time()}: The address for package #9 is now {package_9.delivery_address}, {package_9.delivery_city}, {package_9.state}\n")
         time.sleep(0.3)
         print(f"{truck_3.get_time().time()} AM: Truck_{truck_3.truck_id} leaves the hub with {truck_3.packages.size} packages.\n")
         truck_3.deliver_packages()
